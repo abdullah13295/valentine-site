@@ -52,7 +52,6 @@
       transition: transform 0.15s ease;
     }
 
-    /* YES BUTTON */
     #yesBtn {
       left: 40px;
       background: #ff4d6d;
@@ -65,7 +64,6 @@
       font-weight: bold;
     }
 
-    /* يتحول إلى قلب كامل */
     #yesBtn.heartMode {
       width: 80px;
       height: 80px;
@@ -75,15 +73,13 @@
       transform: scale(1.15);
     }
 
-    /* NO BUTTON */
     #noBtn {
       right: 40px;
       background: #333;
       color: white;
-      transition: left 0.25s ease, top 0.25s ease; /* حركة انسيابية */
+      transition: left 0.22s ease, top 0.22s ease;
     }
 
-    /* Surprise section */
     .surprise {
       display: none;
       position: relative;
@@ -147,13 +143,8 @@
       <div class="loveText">I love you ❤️</div>
     </div>
 
-    <iframe
-      id="player"
-      width="0"
-      height="0"
-      src="https://www.youtube.com/embed/450p7goxZqg?start=60&autoplay=0"
-      allow="autoplay">
-    </iframe>
+    <!-- Local MP3 -->
+    <audio id="loveSong" src="song.mp3" preload="auto"></audio>
   </div>
 
   <script>
@@ -162,9 +153,9 @@
     const surprise = document.getElementById("surprise");
     const question = document.getElementById("question");
     const buttonsArea = document.getElementById("buttonsArea");
-    const player = document.getElementById("player");
+    const loveSong = document.getElementById("loveSong");
 
-    /* ===== YES يصبح قلب كامل ===== */
+    /* YES hover */
     yesBtn.addEventListener("mouseenter", () => {
       yesBtn.textContent = "❤️";
       yesBtn.classList.add("heartMode");
@@ -175,22 +166,15 @@
       yesBtn.classList.remove("heartMode");
     });
 
-    /* ===== NO يهرب أسرع وبذكاء ===== */
-    function moveButton(e) {
+    /* NO escapes */
+    function moveButton() {
       const rect = buttonsArea.getBoundingClientRect();
-
-      const padding = 10;
-      const maxX = rect.width - noBtn.offsetWidth - padding;
-      const maxY = rect.height - noBtn.offsetHeight - padding;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      const maxX = rect.width - noBtn.offsetWidth;
+      const maxY = rect.height - noBtn.offsetHeight;
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
     }
 
-    // يتحرك عند الاقتراب + عند محاولة الضغط
     noBtn.addEventListener("mouseenter", moveButton);
     noBtn.addEventListener("mousemove", moveButton);
     noBtn.addEventListener("mousedown", moveButton);
@@ -207,6 +191,23 @@
       setTimeout(() => heart.remove(), 8000);
     }
 
+    /* 🔊 Smooth fade‑in sound */
+    function playWithFadeIn(audio, duration = 4000) {
+      audio.volume = 0;            // start silent
+      audio.currentTime = 60;      // start at lyric moment
+      audio.play();
+
+      const steps = 40;
+      const stepTime = duration / steps;
+      let currentStep = 0;
+
+      const fade = setInterval(() => {
+        currentStep++;
+        audio.volume = currentStep / steps;
+        if (currentStep >= steps) clearInterval(fade);
+      }, stepTime);
+    }
+
     /* YES click */
     yesBtn.addEventListener("click", () => {
       question.style.display = "none";
@@ -215,7 +216,7 @@
 
       setInterval(createHeart, 250);
 
-      player.src = "https://www.youtube.com/embed/450p7goxZqg?start=60&autoplay=1";
+      playWithFadeIn(loveSong, 4000); // 4 seconds fade in
     });
   </script>
 </body>
