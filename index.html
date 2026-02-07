@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine ❤️</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 50px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .buttons {
+      position: relative;
+      height: 150px;
+      width: 400px;
+    }
+
+    button {
+      font-size: 1.3rem;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      position: absolute;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    #yesBtn { left: 40px; background: #ff4d6d; color: white; }
+    #noBtn { right: 40px; background: #333; color: white; }
+
+    .heartPop { transform: scale(1.2); }
+
+    /* Surprise section */
+    .surprise {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .photo {
+      max-width: 80vw;
+      max-height: 70vh;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      z-index: 2;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .heart {
+      position: absolute;
+      color: #ff2e63;
+      font-size: 24px;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.8;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+    }
+
+    .loveText {
+      color: white;
+      font-size: 2.2rem;
+      margin-top: 20px;
+      z-index: 2;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="question">Will you be my valentine?</h1>
+
+    <div class="buttons" id="buttonsArea">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+
+    <div class="surprise" id="surprise">
+      <!-- IMPORTANT: ضع اسم صورتك هنا -->
+      <img src="photo.jpg" class="photo" />
+      <div class="loveText">I love you ❤️</div>
+    </div>
+
+    <!-- Hidden YouTube audio starting near the lyric -->
+    <iframe
+      id="player"
+      width="0"
+      height="0"
+      src="https://www.youtube.com/embed/450p7goxZqg?start=60&autoplay=0"
+      allow="autoplay">
+    </iframe>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const surprise = document.getElementById("surprise");
+    const question = document.getElementById("question");
+    const buttonsArea = document.getElementById("buttonsArea");
+    const player = document.getElementById("player");
+
+    // Yes hover -> heart
+    yesBtn.addEventListener("mouseenter", () => {
+      yesBtn.textContent = "❤️";
+      yesBtn.classList.add("heartPop");
+    });
+
+    yesBtn.addEventListener("mouseleave", () => {
+      yesBtn.textContent = "Yes";
+      yesBtn.classList.remove("heartPop");
+    });
+
+    // No runs away
+    function moveButton() {
+      const maxX = buttonsArea.clientWidth - noBtn.offsetWidth;
+      const maxY = buttonsArea.clientHeight - noBtn.offsetHeight;
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
+    }
+    noBtn.addEventListener("mouseenter", moveButton);
+
+    // Hearts animation
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (20 + Math.random() * 30) + "px";
+      heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+
+    // Yes click -> show image + music + hearts
+    yesBtn.addEventListener("click", () => {
+      question.style.display = "none";
+      buttonsArea.style.display = "none";
+      surprise.style.display = "flex";
+
+      setInterval(createHeart, 300);
+
+      // autoplay from lyric moment
+      player.src = "https://www.youtube.com/embed/450p7goxZqg?start=60&autoplay=1";
+    });
+  </script>
+</body>
+</html>
